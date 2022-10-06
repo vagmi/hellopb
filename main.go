@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/pocketbase/pocketbase"
@@ -11,17 +10,34 @@ import (
 
 func main() {
 	app := pocketbase.New()
-	app.RootCmd.AddCommand(&cobra.Command{
-		Use:   "export",
-		Short: "Exports the collection to JSON on STDOUT",
+	var filename string
+	exportCmd := &cobra.Command{
+		Use:       "export",
+		Short:     "Exports the collection to JSON on STDOUT",
+		ValidArgs: []string{"filename"},
 		Run: func(cmd *cobra.Command, args []string) {
-			colls, err := exporter.ExportCollections(app)
+			err := exporter.ExportCollections(app, filename)
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println(colls)
 		},
-	})
+	}
+	exportCmd.Flags().StringVarP(&filename, "output", "o", "collections.json", "Export to file")
+
+	importCmd := &cobra.Command{
+		Use:       "import",
+		Short:     "Imports the collection from JSON",
+		ValidArgs: []string{"filename"},
+		Run: func(cmd *cobra.Command, args []string) {
+			err := exporter.ImportCollections(app, filename)
+			if err != nil {
+				panic(err)
+			}
+		},
+	}
+	importCmd.Flags().StringVarP(&filename, "from", "f", "collections.json", "Import from file")
+	app.RootCmd.AddCommand(exportCmd)
+	app.RootCmd.AddCommand(importCmd)
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}

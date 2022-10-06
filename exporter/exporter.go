@@ -1,24 +1,44 @@
 package exporter
 
 import (
-	"bytes"
 	"encoding/json"
+	"os"
 
 	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/forms"
 	"github.com/pocketbase/pocketbase/models"
 )
 
-func ExportCollections(app *pocketbase.PocketBase) (string, error) {
+func ExportCollections(app *pocketbase.PocketBase, filename string) error {
 	var collections []models.Collection
 	err := app.Dao().CollectionQuery().All(&collections)
 	if err != nil {
-		return "", nil
+		return err
 	}
-	var buf bytes.Buffer
-	encoder := json.NewEncoder(&buf)
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(collections); err != nil {
-		return "", nil
+		return err
 	}
-	return buf.String(), nil
+	return nil
+}
+
+func ImportCollections(app *pocketbase.PocketBase, filename string) error {
+	var collections []*models.Collection
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(&collections); err != nil {
+		return err
+	}
+	importer := forms.NewCollectionsImport(app)
+	importer.Collections = collections
+	return importer.Submit()
 }
