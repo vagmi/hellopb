@@ -2,37 +2,20 @@ package exporter_test
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"os"
 	"testing"
 
-	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/migrations"
-	"github.com/pocketbase/pocketbase/tools/migrate"
 	"github.com/vagmi/hellopb/exporter"
 	_ "github.com/vagmi/hellopb/migrations"
+	"github.com/vagmi/hellopb/testutils"
 )
 
 var app core.App
 
 func TestMain(m *testing.M) {
-
-	os.RemoveAll("./test_pb_data")
-	app = pocketbase.NewWithConfig(pocketbase.Config{
-		DefaultDataDir: "./test_pb_data",
-	})
-	app.Bootstrap()
-	runner, err := migrate.NewRunner(app.DB(), migrations.AppMigrations)
-	if err != nil {
-		log.Fatal(err)
-	}
-	mList, err := runner.Up()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("rann the following migrations %v\n", mList)
+	app = testutils.GetTestApp()
+	defer testutils.CleanUpTestDir(app)
 	m.Run()
 }
 
