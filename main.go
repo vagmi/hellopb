@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
@@ -35,7 +36,6 @@ func addEndpoints(app core.App) {
 				apis.RequireAdminOrUserAuth(),
 			},
 		})
-
 		return nil
 	})
 }
@@ -59,12 +59,18 @@ func addCommands(app *pocketbase.PocketBase) {
 		Short:     "Exports the collection to JSON on STDOUT",
 		ValidArgs: []string{"filename"},
 		Run: func(cmd *cobra.Command, args []string) {
-			err := exporter.ExportCollections(app, filename)
+			collectionFile, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer collectionFile.Close()
+			err = exporter.ExportCollections(app, collectionFile)
 			if err != nil {
 				panic(err)
 			}
 		},
 	}
+
 	exportCmd.Flags().StringVarP(&filename, "output", "o", "collections.json", "Export to file")
 
 	importCmd := &cobra.Command{

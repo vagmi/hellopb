@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"encoding/json"
+	"io"
 	"os"
 
 	"github.com/pocketbase/pocketbase/core"
@@ -9,18 +10,13 @@ import (
 	"github.com/pocketbase/pocketbase/models"
 )
 
-func ExportCollections(app core.App, filename string) error {
+func ExportCollections(app core.App, writeTo io.Writer) error {
 	var collections []models.Collection
 	err := app.Dao().CollectionQuery().All(&collections)
 	if err != nil {
 		return err
 	}
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	encoder := json.NewEncoder(file)
+	encoder := json.NewEncoder(writeTo)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(collections); err != nil {
 		return err
