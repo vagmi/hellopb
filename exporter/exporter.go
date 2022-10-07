@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/forms"
 	"github.com/pocketbase/pocketbase/models"
 )
 
-func ExportCollections(app *pocketbase.PocketBase, filename string) error {
+func ExportCollections(app core.App, filename string) error {
 	var collections []models.Collection
 	err := app.Dao().CollectionQuery().All(&collections)
 	if err != nil {
@@ -28,7 +28,7 @@ func ExportCollections(app *pocketbase.PocketBase, filename string) error {
 	return nil
 }
 
-func ImportCollections(app *pocketbase.PocketBase, filename string) error {
+func ImportCollections(app core.App, filename string) error {
 	var collections []*models.Collection
 	file, err := os.Open(filename)
 	if err != nil {

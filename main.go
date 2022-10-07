@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -23,7 +23,7 @@ func main() {
 	}
 }
 
-func addEndpoints(app *pocketbase.PocketBase) {
+func addEndpoints(app core.App) {
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.AddRoute(echo.Route{
 			Method: http.MethodGet,
@@ -40,7 +40,7 @@ func addEndpoints(app *pocketbase.PocketBase) {
 	})
 }
 
-func setupHooks(app *pocketbase.PocketBase) {
+func setupHooks(app core.App) {
 	app.OnRecordAfterCreateRequest().Add(func(e *core.RecordCreateEvent) error {
 		if e.Record.Collection().Name == "invitations" {
 			err := invitations.SendInvitation(app, e.Record)

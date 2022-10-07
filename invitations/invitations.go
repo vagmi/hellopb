@@ -3,7 +3,7 @@ package invitations
 import (
 	"net/mail"
 
-	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/daos"
 	"github.com/pocketbase/pocketbase/models"
 	"github.com/pocketbase/pocketbase/tools/types"
@@ -35,7 +35,7 @@ func NewFromRecord(record *models.Record, dao *daos.Dao) (*Invitation, error) {
 	}, nil
 }
 
-func SendInvitation(app *pocketbase.PocketBase, rec *models.Record) error {
+func SendInvitation(app core.App, rec *models.Record) error {
 	client := app.NewMailClient()
 	invitation, err := NewFromRecord(rec, app.Dao())
 	if err != nil {
