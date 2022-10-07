@@ -9,4 +9,4 @@ This is a kitchen sink project to explore all the features of PocketBase.
 * [x] Custom Command
 * [ ] Custom SQL support
 * [ ] Websocket support
-* [ ] Send custom email
+* [x] Send custom email

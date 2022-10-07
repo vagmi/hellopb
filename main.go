@@ -4,8 +4,10 @@ import (
 	"log"
 
 	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/cobra"
 	"github.com/vagmi/hellopb/exporter"
+	"github.com/vagmi/hellopb/invitations"
 )
 
 func main() {
@@ -38,6 +40,15 @@ func main() {
 	importCmd.Flags().StringVarP(&filename, "from", "f", "collections.json", "Import from file")
 	app.RootCmd.AddCommand(exportCmd)
 	app.RootCmd.AddCommand(importCmd)
+	app.OnRecordAfterCreateRequest().Add(func(e *core.RecordCreateEvent) error {
+		if e.Record.Collection().Name == "invitations" {
+			err := invitations.SendInvitation(app, e.Record)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
