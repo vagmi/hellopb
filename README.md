@@ -10,5 +10,5 @@ This is a kitchen sink project to explore all the features of PocketBase. This w
 * [x] Custom Endpoint
 * [x] Custom Command
 * [ ] Custom SQL support
-* [ ] Websocket support
+* [x] Websocket support
 * [x] Send custom email

@@ -3,6 +3,7 @@ module github.com/vagmi/hellopb
 go 1.19
 
 require (
+	github.com/gorilla/websocket v1.4.1
 	github.com/labstack/echo/v5 v5.0.0-20220201181537-ed2888cfa198
 	github.com/pocketbase/dbx v1.6.0
 	github.com/pocketbase/pocketbase v0.7.2

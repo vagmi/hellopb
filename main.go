@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -36,7 +38,38 @@ func addEndpoints(app core.App) {
 				apis.RequireAdminOrUserAuth(),
 			},
 		})
+
+		e.Router.AddRoute(echo.Route{
+			Method: http.MethodGet,
+			Path:   "/api/websocket",
+			Handler: func(c echo.Context) error {
+				upgrader := websocket.Upgrader{}
+				ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+				if err != nil {
+					return err
+				}
+				msg := []byte("hello client")
+				defer ws.Close()
+				for {
+					err := ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("Server %s", string(msg))))
+					if err != nil {
+						log.Default().Println(err)
+					}
+
+					// Read
+					_, msg, err = ws.ReadMessage()
+					if err != nil {
+						log.Default().Println(err)
+					}
+					fmt.Printf("%s\n", msg)
+				}
+			},
+			Middlewares: []echo.MiddlewareFunc{
+				apis.RequireAdminOrUserAuth(),
+			},
+		})
 		return nil
+
 	})
 }
 
