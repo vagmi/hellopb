@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/vagmi/hellopb/exporter"
 	"github.com/vagmi/hellopb/invitations"
+	_ "github.com/vagmi/hellopb/migrations"
 )
 
 func main() {
