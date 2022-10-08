@@ -60,10 +60,12 @@ func addEndpoints(app core.App) {
 					// Read
 					_, msg, err = ws.ReadMessage()
 					if err != nil {
-						log.Default().Println(err)
+						log.Default().Println("The client probably closed", err)
+						break
 					}
 					fmt.Printf("%s\n", msg)
 				}
+				return nil
 			},
 			Middlewares: []echo.MiddlewareFunc{
 				apis.RequireAdminOrUserAuth(),
