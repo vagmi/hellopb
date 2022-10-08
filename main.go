@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -15,15 +14,25 @@ import (
 	"github.com/vagmi/hellopb/exporter"
 	"github.com/vagmi/hellopb/invitations"
 	_ "github.com/vagmi/hellopb/migrations"
+	"go.uber.org/zap"
 )
 
+var logger *zap.SugaredLogger
+
+func init() {
+	l, err := zap.NewProduction()
+	if err != nil {
+		panic(err)
+	}
+	logger = l.Sugar()
+}
 func main() {
 	app := pocketbase.New()
 	addCommands(app)
 	setupHooks(app)
 	addEndpoints(app)
 	if err := app.Start(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }
 
@@ -54,16 +63,16 @@ func addEndpoints(app core.App) {
 				for {
 					err := ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("Server %s", string(msg))))
 					if err != nil {
-						log.Default().Println(err)
+						logger.Error(err)
 					}
 
 					// Read
 					_, msg, err = ws.ReadMessage()
 					if err != nil {
-						log.Default().Println("The client probably closed", err)
+						logger.Errorf("The client probably closed %v", err)
 						break
 					}
-					fmt.Printf("%s\n", msg)
+					logger.Infof("From client %s\n", msg)
 				}
 				return nil
 			},
@@ -97,7 +106,7 @@ func addCommands(app *pocketbase.PocketBase) {
 		Run: func(cmd *cobra.Command, args []string) {
 			collectionFile, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0755)
 			if err != nil {
-				log.Fatal(err)
+				logger.Fatal(err)
 			}
 			defer collectionFile.Close()
 			err = exporter.ExportCollections(app, collectionFile)

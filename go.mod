@@ -8,10 +8,13 @@ require (
 	github.com/pocketbase/dbx v1.6.0
 	github.com/pocketbase/pocketbase v0.7.2
 	github.com/spf13/cobra v1.5.0
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	go.uber.org/zap v1.21.0
 )
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6 // indirect
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.44.99 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.15 // indirect
@@ -52,12 +55,16 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
+	go.uber.org/multierr v1.8.0 // indirect
 	gocloud.dev v0.26.0 // indirect
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69 // indirect
